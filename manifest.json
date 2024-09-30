@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "CAI Tools Addon",
+    "author": "https://github.com/mangadi3859",
+    "description": "Add summarize button need CAI Tools to work",
+    "version": "1.1.0",
+    "icons": {
+        "128": "/assets/logo.png"
+    },
+    "permissions": ["storage"],
+    "content_scripts": [
+        {
+            "matches": ["https://*.character.ai/*"],
+            "js": ["/dist/js/content.js"],
+            "css": ["/dist/css/style.css"],
+            "run_at": "document_idle"
+        }
+    ]
+}
