@@ -148,6 +148,7 @@ async function main() {
         submitBtn.innerText = "Fetching turns...";
         let limit = (<HTMLInputElement>hookBody.querySelector("#caitFetchAllInput")).checked;
         let history = await fetchHistory(chatInfo.chats[0].chat_id, limit);
+        console.log(history);
 
         submitBtn.innerText = "Generating Summaries...";
         let parts = (<HTMLInputElement>hookBody.querySelector("#caitMultipleInput")).checked;
@@ -160,8 +161,11 @@ async function main() {
             hookBody.innerHTML +
             `
             <label>Result</label>
+            <button id="caitCopyHistory" style="background-color: var(--btn-primary); margin-right: auto; padding: .25rem 1rem;" class="btn">Copy History</button>
             <p class="text-input" style="height:10rem;padding-block:.5rem;">${summaries.map((e) => e.text).join("<br/><br/>")}</p>
         `;
+
+        let copyHisBtn = <HTMLButtonElement>document.querySelector("#caitCopyHistory");
 
         submitBtn.disabled = true;
         submitBtn.innerText = "completed...";
@@ -177,7 +181,20 @@ async function main() {
             },
             { once: true }
         );
-        copySumBtn.addEventListener("click", copyToClipboard, { once: true });
+
+        copyHisBtn.addEventListener("click", copyHistoryToClipboard);
+        copySumBtn.addEventListener("click", copyToClipboard);
+
+        async function copyHistoryToClipboard(e: MouseEvent) {
+            copyHisBtn.disabled = true;
+            copyHisBtn.innerText = "Copied...";
+            setTimeout(() => {
+                copyHisBtn.innerText = "Copy History";
+                copyHisBtn.disabled = false;
+            }, 3000);
+            await navigator.clipboard.writeText(history.join("\n\n"));
+        }
+
         async function copyToClipboard(e: MouseEvent) {
             await navigator.clipboard.writeText(summaries.map((e) => e.text).join("\n\n"));
             copySumBtn.disabled = true;
@@ -214,6 +231,7 @@ async function main() {
             webhookBtn.disabled = false;
 
             copySumBtn.removeEventListener("click", copyToClipboard);
+            copyHisBtn.removeEventListener("click", copyHistoryToClipboard);
         }
     });
 
