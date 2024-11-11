@@ -1,4 +1,3 @@
-import { Chats } from "./cai";
 import { MAX_PARTS } from "./cohere";
 
 export const HOOK_KEY = "webhook-url";
